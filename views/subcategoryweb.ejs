@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Details</title>
+    <link rel="stylesheet" href="/stylesheets/subcategory.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <h1 class="site-title">Top Viral News: <%= category.type %></h1>
+    
+            <% if (loggedIn) { %>
+                <button class="openSubcategoryModal" onclick="openSubcategoryModal()">Add Subcategory</button>
+            <% } %>
+    
+            <div class="auth-buttons">
+                <% if (!loggedIn) { %>
+                    <a href="/signup"><button class="nav-button">Signup</button></a>
+                    <a href="/login"><button class="nav-button">Login</button></a>
+                <% } else { %>
+                    <a href="/logout"><button class="nav-button">Logout</button></a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+    
+
+    <main>
+        <section class="category-details">
+            <h2>
+                <%= category.type %> : <%= category.newcategory %>
+            </h2>
+
+            <img src="<%= category.imageurl %>" alt="Category Image">
+
+            <p>
+                <%= category.summary %>
+            </p>
+        </section>
+
+        <section class="subcategory-cards">
+            <% subcategories.forEach((val)=> { %>
+                <div class="subcategory-card">
+                    <h1>
+                        <%= val.name %>
+                    </h1>
+
+                    <img src="<%= val.imageurl %>" alt="<%= val.name %>" class="subcategory-image">
+
+                    <h3>
+                        <%= val.subcategoryName %>
+                    </h3>
+
+                    <h4> Details : </h4>
+                    <p>
+                        <%= val.details %>
+                    </p>
+
+                    <h4> More Details : </h4>
+                    <p>
+                        <%= val.moreInfo %>
+                    </p>
+
+                    <% if (loggedIn) { %>
+                        <button class="updateButton" onclick="openUpdateModal('<%= val._id %>','<%= val.name %>','<%= val.subcategoryName %>','<%= val.imageurl %>',`<%= val.details %>`,`<%= val.moreInfo %>`)">Update</button>
+                        <button class="delete-button" onclick="openDeleteModal('<%= val._id %>')">Delete</button>
+                    <% } %>
+                </div>
+                <% }) %>
+        </section>
+
+        <!-- Modal for Add Subcategory -->
+        <div id="subcategoryModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeSubcategoryModal()">&times;</span>
+                <h2>Add New Subcategory</h2>
+                <form action="/subcategories/add" method="POST">
+
+                    <input type="hidden" name="categoryId" value="<%= category._id %>">
+
+                    <label for="name">Name:</label>
+                    <input type="text" name="name"><br>
+
+                    <label for="subcategoryName">Occupation:</label>
+                    <input type="text" name="subcategoryName"><br>
+
+                    <label for="imageurl">Image URL:</label>
+                    <input type="text" name="imageurl"><br>
+
+                    <label for="details">Details:</label>
+                    <textarea name="details"></textarea><br>
+
+                    <label for="moreInfo">More Information:</label>
+                    <textarea name="moreInfo"></textarea><br>
+
+                    <button type="submit">Add Subcategory</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for Update Subcategory -->
+        <div id="updateModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeUpdateModal()">&times;</span>
+                <h2>Update Subcategory</h2>
+                <form action="/subcategories/update" method="POST">
+
+                    <input type="hidden" name="subcategoryId" id="subcategoryId">
+
+                    <input type="hidden" name="categoryId" value="<%= category._id %>">
+
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="updateName"><br>
+
+                    <label for="subcategoryName">Occupation:</label>
+                    <input type="text" name="subcategoryName" id="updateSubcategoryName"><br>
+
+                    <label for="imageurl">Image URL:</label>
+                    <input type="text" name="imageurl" id="updateImageurl"><br>
+
+                    <label for="details">Details:</label>
+                    <textarea name="details" id="updateDetails"></textarea><br>
+
+                    <label for="moreInfo">More Information:</label>
+                    <textarea name="moreInfo" id="updateMoreInfo"></textarea><br>
+
+                    <button type="submit">Update Subcategory</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteCategoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeleteModal()">&times;</span>
+            <h2>Are you sure you want to Delete this category?</h2>
+            <form id="deleteCategoryForm" action="/subcategories/delete" method="post">
+                <input type="hidden" name="id" id="deleteCategoryId">
+
+                <button type="submit">Yes, Delete</button>
+
+                <button type="button" onclick="closeDeleteModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Footer Design -->
+    
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Welcome to Top 10 Viral News! Stay updated with the latest happenings in sports, technology, entertainment, and world news.</p>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Sports">Sports</a></li>
+                    <li><a href="/Technology">Technology</a></li>
+                    <li><a href="/Entertainment">Entertainment</a></li>
+                    <li><a href="/world">World News</a></li>
+                </ul>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@top10news.com</p>
+                <p>Phone: +1 234 567 890</p>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <form>
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Top 10 Viral News. All rights reserved. Designed with ❤️ by [Mohit Bhalani]</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        function openSubcategoryModal() {
+            document.getElementById("subcategoryModal").style.display = "block";
+        }
+
+        function closeSubcategoryModal() {
+            document.getElementById("subcategoryModal").style.display = "none";
+        }
+
+
+        function openUpdateModal(id, name, subcategoryName, imageurl, details, moreInfo) {
+            console.log(id, name, subcategoryName, imageurl, details, moreInfo);
+            
+            // openSubcategoryModal()
+            document.getElementById("updateModal").style.display = "block";
+            document.getElementById("subcategoryId").value = id;
+            document.getElementById("updateName").value = name;
+            document.getElementById("updateSubcategoryName").value = subcategoryName;
+            document.getElementById("updateImageurl").value = imageurl;
+            document.getElementById("updateDetails").value = details;
+            document.getElementById("updateMoreInfo").value = moreInfo;
+        }
+
+        function closeUpdateModal() {
+            document.getElementById("updateModal").style.display = "none";
+        }
+
+        function openDeleteModal(id) {
+            document.getElementById("deleteCategoryId").value = id;
+            document.getElementById("deleteCategoryModal").style.display = "block";
+        }
+
+        function closeDeleteModal() {
+            document.getElementById("deleteCategoryModal").style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
